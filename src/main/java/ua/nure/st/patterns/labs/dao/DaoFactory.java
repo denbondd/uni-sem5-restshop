@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import ua.nure.st.patterns.labs.dao.mysql.MySqlDao;
+import ua.nure.st.patterns.labs.observer.ShopEventManager;
 
 import javax.sql.DataSource;
 
@@ -12,10 +13,10 @@ public class DaoFactory {
 
     private final Dao dao;
 
-    public DaoFactory(@Value("${db.type}") String type, DataSource dataSource) {
+    public DaoFactory(@Value("${db.type}") String type, DataSource dataSource, ShopEventManager shopEventManager) {
         DaoType daoType = DaoType.valueOf(type);
         if (daoType == DaoType.MY_SQL) {
-            dao = new MySqlDao(dataSource);
+            dao = new MySqlDao(dataSource, shopEventManager);
         } else {
             throw new IllegalArgumentException("Unknown database type");
         }

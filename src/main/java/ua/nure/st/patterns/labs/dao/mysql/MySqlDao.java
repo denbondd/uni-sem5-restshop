@@ -7,6 +7,7 @@ import ua.nure.st.patterns.labs.dao.Dao;
 import ua.nure.st.patterns.labs.dao.ProductDao;
 import ua.nure.st.patterns.labs.dao.ShopDao;
 import ua.nure.st.patterns.labs.dao.ShopHasProductDao;
+import ua.nure.st.patterns.labs.observer.ShopEventManager;
 
 import javax.sql.DataSource;
 
@@ -14,6 +15,7 @@ import javax.sql.DataSource;
 public class MySqlDao implements Dao {
 
     private final DataSource dataSource;
+    private final ShopEventManager shopEventManager;
 
     private ProductDao productDao;
     private ShopDao shopDao;
@@ -21,8 +23,9 @@ public class MySqlDao implements Dao {
     private CategoryDao categoryDao;
     private ShopHasProductDao shopHasProductDao;
 
-    public MySqlDao(DataSource dataSource) {
+    public MySqlDao(DataSource dataSource, ShopEventManager shopEventManager) {
         this.dataSource = dataSource;
+        this.shopEventManager = shopEventManager;
     }
 
     @Override
@@ -60,7 +63,7 @@ public class MySqlDao implements Dao {
     @Override
     public ShopHasProductDao getShopHasProductDao() {
         if (shopHasProductDao == null) {
-            shopHasProductDao = new ShopHasProductMySqlDao(dataSource);
+            shopHasProductDao = new ShopHasProductMySqlDao(dataSource, shopEventManager);
         }
         return shopHasProductDao;
     }

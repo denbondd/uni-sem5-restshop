@@ -1,6 +1,7 @@
 package ua.nure.st.patterns.labs.dao.mysql;
 
 import ua.nure.st.patterns.labs.dao.ShopHasProductDao;
+import ua.nure.st.patterns.labs.observer.ShopEventManager;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -21,16 +22,18 @@ public class ShopHasProductMySqlDao implements ShopHasProductDao {
     private static final String DELETE = "DELETE FROM shop_has_product WHERE shop_id = ? AND product_id = ?";
 
     private final DataSource dataSource;
+    private final ShopEventManager shopEventManager;
 
-    public ShopHasProductMySqlDao(DataSource dataSource) {
+    public ShopHasProductMySqlDao(DataSource dataSource, ShopEventManager shopEventManager) {
         this.dataSource = dataSource;
+        this.shopEventManager = shopEventManager;
     }
 
     @Override
     public List<ProductHasShop> getProductsInShop(Long shopId) {
         List<ProductHasShop> products = new ArrayList<>();
-        try (Connection con = dataSource.getConnection();
-             PreparedStatement ps = con.prepareStatement(SELECT_PRODUCTS_IN_SHOP)) {
+        try (Connection con = dataSource.getConnection(); PreparedStatement ps = con.prepareStatement(
+                SELECT_PRODUCTS_IN_SHOP)) {
             ps.setLong(1, shopId);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
@@ -46,8 +49,8 @@ public class ShopHasProductMySqlDao implements ShopHasProductDao {
     @Override
     public List<ShopHasProduct> getShopsWithProduct(Long id) {
         List<ShopHasProduct> shops = new ArrayList<>();
-        try (Connection con = dataSource.getConnection();
-             PreparedStatement ps = con.prepareStatement(SELECT_SHOPS_WITH_PRODUCT)) {
+        try (Connection con = dataSource.getConnection(); PreparedStatement ps = con.prepareStatement(
+                SELECT_SHOPS_WITH_PRODUCT)) {
             ps.setLong(1, id);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
@@ -62,12 +65,19 @@ public class ShopHasProductMySqlDao implements ShopHasProductDao {
 
     @Override
     public boolean save(Long shopId, Long productId, Integer count) {
-        try (Connection con = dataSource.getConnection();
-             PreparedStatement ps = con.prepareStatement(INSERT)) {
+        try (Connection con = dataSource.getConnection(); PreparedStatement ps = con.prepareStatement(INSERT)) {
             ps.setLong(1, shopId);
             ps.setLong(2, productId);
             ps.setInt(3, count);
-            return ps.executeUpdate() > 0;
+            if (ps.executeUpdate() > 0) {
+                shopEventManager.notify(
+                        shopId,
+                        String.format("Product %d was added with initial count %d", productId, count)
+                );
+                return true;
+            } else {
+                return false;
+            }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -75,12 +85,16 @@ public class ShopHasProductMySqlDao implements ShopHasProductDao {
 
     @Override
     public boolean update(Long shopId, Long productId, Integer count) {
-        try (Connection con = dataSource.getConnection();
-             PreparedStatement ps = con.prepareStatement(UPDATE)) {
+        try (Connection con = dataSource.getConnection(); PreparedStatement ps = con.prepareStatement(UPDATE)) {
             ps.setInt(1, count);
             ps.setLong(2, shopId);
             ps.setLong(3, productId);
-            return ps.executeUpdate() > 0;
+            if (ps.executeUpdate() > 0) {
+                shopEventManager.notify(shopId, String.format("Product %d count changed to %d", productId, count));
+                return true;
+            } else {
+                return false;
+            }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -88,11 +102,15 @@ public class ShopHasProductMySqlDao implements ShopHasProductDao {
 
     @Override
     public boolean delete(Long shopId, Long productId) {
-        try (Connection con = dataSource.getConnection();
-             PreparedStatement ps = con.prepareStatement(DELETE)) {
+        try (Connection con = dataSource.getConnection(); PreparedStatement ps = con.prepareStatement(DELETE)) {
             ps.setLong(1, shopId);
             ps.setLong(2, productId);
-            return ps.executeUpdate() > 0;
+            if (ps.executeUpdate() > 0) {
+                shopEventManager.notify(shopId, String.format("Product %d was deleted", productId));
+                return true;
+            } else {
+                return false;
+            }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

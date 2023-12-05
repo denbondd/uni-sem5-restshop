@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ua.nure.st.patterns.labs.controller.dto.AddProductToShopDto;
 import ua.nure.st.patterns.labs.dao.ShopHasProductDao;
+import ua.nure.st.patterns.labs.observer.ShopEventManager;
 
 import java.util.List;
 
@@ -18,9 +19,11 @@ import java.util.List;
 public class ShopHasProductController {
 
     private final ShopHasProductDao shopHasProductDao;
+    private final ShopEventManager shopEventManager;
 
-    public ShopHasProductController(ShopHasProductDao shopHasProductDao) {
+    public ShopHasProductController(ShopHasProductDao shopHasProductDao, ShopEventManager shopEventManager) {
         this.shopHasProductDao = shopHasProductDao;
+        this.shopEventManager = shopEventManager;
     }
 
     @GetMapping("/shopsWithProduct/{productId}")
@@ -46,5 +49,10 @@ public class ShopHasProductController {
     @DeleteMapping("/{shopId}/{productId}")
     public boolean deleteProductFromShop(@PathVariable Long shopId, @PathVariable Long productId) {
         return shopHasProductDao.delete(shopId, productId);
+    }
+
+    @PostMapping("/subscribe/{shopId}")
+    public void subscribe(@PathVariable Long shopId) {
+        shopEventManager.subscribe(shopId, System.out::println);
     }
 }
