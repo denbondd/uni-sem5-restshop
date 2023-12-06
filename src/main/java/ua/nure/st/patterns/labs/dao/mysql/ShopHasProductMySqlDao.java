@@ -66,18 +66,22 @@ public class ShopHasProductMySqlDao implements ShopHasProductDao {
     @Override
     public boolean save(Long shopId, Long productId, Integer count) {
         try (Connection con = dataSource.getConnection(); PreparedStatement ps = con.prepareStatement(INSERT)) {
+            con.setAutoCommit(false);
+            con.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
+
             ps.setLong(1, shopId);
             ps.setLong(2, productId);
             ps.setInt(3, count);
-            if (ps.executeUpdate() > 0) {
+            boolean success = ps.executeUpdate() > 0;
+            if (success) {
                 shopEventManager.notify(
                         shopId,
                         String.format("Product %d was added with initial count %d", productId, count)
                 );
-                return true;
-            } else {
-                return false;
             }
+
+            con.commit();
+            return success;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -86,15 +90,20 @@ public class ShopHasProductMySqlDao implements ShopHasProductDao {
     @Override
     public boolean update(Long shopId, Long productId, Integer count) {
         try (Connection con = dataSource.getConnection(); PreparedStatement ps = con.prepareStatement(UPDATE)) {
+            con.setAutoCommit(false);
+            con.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
+
             ps.setInt(1, count);
             ps.setLong(2, shopId);
             ps.setLong(3, productId);
-            if (ps.executeUpdate() > 0) {
+            boolean success = ps.executeUpdate() > 0;
+
+            if (success) {
                 shopEventManager.notify(shopId, String.format("Product %d count changed to %d", productId, count));
-                return true;
-            } else {
-                return false;
             }
+
+            con.commit();
+            return success;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
