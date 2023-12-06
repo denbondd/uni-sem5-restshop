@@ -15,7 +15,7 @@ import static ua.nure.st.patterns.labs.dao.mysql.ProductMySqlDao.mapRsToProduct;
 import static ua.nure.st.patterns.labs.dao.mysql.ShopMySqlDao.mapRsToShop;
 
 public class ShopHasProductMySqlDao implements ShopHasProductDao {
-    private static final String SELECT_PRODUCTS_IN_SHOP = "SELECT * FROM shop_has_product JOIN product ON shop_has_product.product_id = product.id WHERE shop_id = ?";
+    private static final String SELECT_PRODUCTS_IN_SHOP = "CALL get_catalog(?)";
     private static final String SELECT_SHOPS_WITH_PRODUCT = "SELECT * FROM shop_has_product JOIN shop ON shop_has_product.shop_id = shop.id WHERE product_id = ?";
     private static final String INSERT = "INSERT INTO shop_has_product (shop_id, product_id, count) VALUES (?, ?, ?)";
     private static final String UPDATE = "UPDATE shop_has_product SET count = ? WHERE shop_id = ? AND product_id = ?";
