@@ -2,6 +2,7 @@ package ua.nure.st.patterns.labs.dao.mysql;
 
 import ua.nure.st.patterns.labs.dao.ProductDao;
 import ua.nure.st.patterns.labs.entity.Product;
+import ua.nure.st.patterns.labs.momento.ProductsHistory;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -23,9 +24,11 @@ public class ProductMySqlDao implements ProductDao {
     private static final String SELECT_PRODUCTS_BY_CATEGORY = "SELECT * FROM product WHERE category_id = ?";
 
     private final DataSource dataSource;
+    private final ProductsHistory productsHistory;
 
     public ProductMySqlDao(DataSource dataSource) {
         this.dataSource = dataSource;
+        this.productsHistory = new ProductsHistory(p -> updateAndLogToHistory(p, false));
     }
 
     public static Product mapRsToProduct(ResultSet rs) throws SQLException {
@@ -36,15 +39,6 @@ public class ProductMySqlDao implements ProductDao {
                 .setBrandId(rs.getLong("brand_id"))
                 .setCategoryId(rs.getLong("category_id"))
                 .build();
-    }
-
-    private static PreparedStatement mapProductToRs(Product product, PreparedStatement ps) throws SQLException {
-        ps.setLong(1, product.getId());
-        ps.setString(2, product.getName());
-        ps.setLong(3, product.getPrice());
-        ps.setLong(4, product.getBrandId());
-        ps.setLong(5, product.getCategoryId());
-        return ps;
     }
 
     @Override
@@ -144,16 +138,32 @@ public class ProductMySqlDao implements ProductDao {
         }
     }
 
-    @Override
-    public boolean update(Product product) {
+    public boolean updateAndLogToHistory(Product product, boolean saveToHistory) {
         try (Connection con = dataSource.getConnection();
              PreparedStatement ps = con.prepareStatement(UPDATE)) {
-            mapProductToRs(product, ps);
-            int result = ps.executeUpdate();
-            return result > 0;
+            ps.setString(1, product.getName());
+            ps.setLong(2, product.getPrice());
+            ps.setLong(3, product.getBrandId());
+            ps.setLong(4, product.getCategoryId());
+            ps.setLong(5, product.getId());
+            boolean isSuccess = ps.executeUpdate() > 0;
+            if (isSuccess && saveToHistory) {
+                productsHistory.push(product.getId(), product);
+            }
+            return isSuccess;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public boolean update(Product product) {
+        return updateAndLogToHistory(product, true);
+    }
+
+    @Override
+    public boolean undo(Long id) {
+        return productsHistory.undo(id);
     }
 
     @Override

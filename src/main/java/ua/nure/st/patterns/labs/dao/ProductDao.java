@@ -12,5 +12,6 @@ public interface ProductDao {
     Product getById(Long id);
     boolean save(String name, String description, Long price, Long brandId, Long categoryId);
     boolean update(Product product);
+    boolean undo(Long id);
     boolean delete(Long id);
 }

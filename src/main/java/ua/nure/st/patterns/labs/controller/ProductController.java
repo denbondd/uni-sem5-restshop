@@ -1,5 +1,7 @@
 package ua.nure.st.patterns.labs.controller;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -58,6 +60,19 @@ public class ProductController {
     public Product updateProduct(@RequestBody Product product) {
         productDao.update(product);
         return product;
+    }
+
+    @PutMapping("/{id}/undo")
+    public ResponseEntity<String> undo(@PathVariable Long id) {
+        boolean res = productDao.undo(id);
+        if (res) {
+            return new ResponseEntity<>("Product was restored", HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(
+                    "Product was not restored. Product history is empty or product no longer exists in database",
+                    HttpStatus.NOT_FOUND
+            );
+        }
     }
 
     @DeleteMapping("/{id}")
