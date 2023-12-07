@@ -1,7 +1,11 @@
 package ua.nure.st.patterns.labs.entity;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+
 public class Brand<ID> {
 
+    @JsonSerialize(using = ToStringSerializer.class)
     private ID id;
     private String name;
 

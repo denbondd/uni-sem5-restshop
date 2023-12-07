@@ -1,6 +1,11 @@
 package ua.nure.st.patterns.labs.entity;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+
 public class Product<ID> {
+
+    @JsonSerialize(using = ToStringSerializer.class)
     private ID id;
     private Long brandId;
     private Long categoryId;
