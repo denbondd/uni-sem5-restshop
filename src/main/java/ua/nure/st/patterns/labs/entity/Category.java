@@ -1,22 +1,22 @@
 package ua.nure.st.patterns.labs.entity;
 
-public class Category {
+public class Category<ID> {
 
-    private Long id;
+    private ID id;
     private String name;
 
     private Category() {}
 
-    public Category(Long id, String name) {
+    public Category(ID id, String name) {
         this.id = id;
         this.name = name;
     }
 
-    public Long getId() {
+    public ID getId() {
         return id;
     }
 
-    private void setId(Long id) {
+    private void setId(ID id) {
         this.id = id;
     }
 
@@ -28,21 +28,21 @@ public class Category {
         this.name = name;
     }
 
-    public static class Builder {
+    public static class Builder<ID> {
 
-        private final Category category = new Category();
+        private final Category<ID> category = new Category<>();
 
-        public Builder setId(Long id) {
+        public Builder<ID> setId(ID id) {
             category.setId(id);
             return this;
         }
 
-        public Builder setName(String name) {
+        public Builder<ID> setName(String name) {
             category.setName(name);
             return this;
         }
 
-        public Category build() {
+        public Category<ID> build() {
             return category;
         }
     }

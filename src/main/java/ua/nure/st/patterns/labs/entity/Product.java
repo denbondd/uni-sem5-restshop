@@ -1,7 +1,7 @@
 package ua.nure.st.patterns.labs.entity;
 
-public class Product {
-    private Long id;
+public class Product<ID> {
+    private ID id;
     private Long brandId;
     private Long categoryId;
     private String name;
@@ -9,7 +9,7 @@ public class Product {
 
     private Product() {}
 
-    public Product(Long id, Long brandId, Long categoryId, String name, Long price) {
+    public Product(ID id, Long brandId, Long categoryId, String name, Long price) {
         this.id = id;
         this.brandId = brandId;
         this.categoryId = categoryId;
@@ -17,11 +17,11 @@ public class Product {
         this.price = price;
     }
 
-    public Long getId() {
+    public ID getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(ID id) {
         this.id = id;
     }
 
@@ -57,35 +57,35 @@ public class Product {
         this.price = price;
     }
 
-    public static class Builder {
-        private final Product product = new Product();
+    public static class Builder<ID> {
+        private final Product<ID> product = new Product<>();
 
-        public Builder setId(Long id) {
+        public Builder<ID> setId(ID id) {
             product.setId(id);
             return this;
         }
 
-        public Builder setBrandId(Long brandId) {
+        public Builder<ID> setBrandId(Long brandId) {
             product.setBrandId(brandId);
             return this;
         }
 
-        public Builder setCategoryId(Long categoryId) {
+        public Builder<ID> setCategoryId(Long categoryId) {
             product.setCategoryId(categoryId);
             return this;
         }
 
-        public Builder setName(String name) {
+        public Builder<ID> setName(String name) {
             product.setName(name);
             return this;
         }
 
-        public Builder setPrice(Long price) {
+        public Builder<ID> setPrice(Long price) {
             product.setPrice(price);
             return this;
         }
 
-        public Product build() {
+        public Product<ID> build() {
             return product;
         }
     }

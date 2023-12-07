@@ -11,7 +11,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CategoryMySqlDao implements CategoryDao {
+public class CategoryMySqlDao implements CategoryDao<Long> {
     private static final String SELECT_ALL = "SELECT * FROM category";
     private static final String SELECT_BY_ID = "SELECT * FROM category WHERE id = ?";
     private static final String INSERT = "INSERT INTO category (name) VALUES (?)";
@@ -24,22 +24,22 @@ public class CategoryMySqlDao implements CategoryDao {
         this.dataSource = dataSource;
     }
 
-    private static Category mapRsToCategory(ResultSet rs) throws SQLException {
-        return new Category.Builder()
+    private static Category<Long> mapRsToCategory(ResultSet rs) throws SQLException {
+        return new Category.Builder<Long>()
                 .setId(rs.getLong("id"))
                 .setName(rs.getString("name"))
                 .build();
     }
 
-    private static PreparedStatement mapCategoryToRs(Category category, PreparedStatement ps) throws SQLException {
+    private static PreparedStatement mapCategoryToRs(Category<Long> category, PreparedStatement ps) throws SQLException {
         ps.setLong(1, category.getId());
         ps.setString(2, category.getName());
         return ps;
     }
 
     @Override
-    public List<Category> getAll() {
-        List<Category> categorys = new ArrayList<>();
+    public List<Category<Long>> getAll() {
+        List<Category<Long>> categorys = new ArrayList<>();
         try (Connection con = dataSource.getConnection();
              PreparedStatement ps = con.prepareStatement(SELECT_ALL);
              ResultSet rs = ps.executeQuery()) {
@@ -53,7 +53,7 @@ public class CategoryMySqlDao implements CategoryDao {
     }
 
     @Override
-    public Category getById(Long id) {
+    public Category<Long> getById(Long id) {
         try (Connection con = dataSource.getConnection();
              PreparedStatement ps = con.prepareStatement(SELECT_BY_ID)) {
             ps.setLong(1, id);
@@ -80,7 +80,7 @@ public class CategoryMySqlDao implements CategoryDao {
     }
 
     @Override
-    public boolean update(Category category) {
+    public boolean update(Category<Long> category) {
         try (Connection con = dataSource.getConnection();
              PreparedStatement ps = con.prepareStatement(UPDATE)) {
             mapCategoryToRs(category, ps);

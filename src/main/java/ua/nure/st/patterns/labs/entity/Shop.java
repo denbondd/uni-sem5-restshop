@@ -1,24 +1,24 @@
 package ua.nure.st.patterns.labs.entity;
 
-public class Shop {
+public class Shop<ID> {
 
-    private Long id;
+    private ID id;
     private String name;
     private String location;
 
     private Shop() {}
 
-    public Shop(Long id, String name, String location) {
+    public Shop(ID id, String name, String location) {
         this.id = id;
         this.name = name;
         this.location = location;
     }
 
-    public Long getId() {
+    public ID getId() {
         return id;
     }
 
-    private void setId(Long id) {
+    private void setId(ID id) {
         this.id = id;
     }
 
@@ -38,25 +38,25 @@ public class Shop {
         this.location = location;
     }
 
-    public static class Builder {
-        private final Shop shop = new Shop();
+    public static class Builder<ID> {
+        private final Shop<ID> shop = new Shop<>();
 
-        public Builder setId(Long id) {
+        public Builder<ID> setId(ID id) {
             shop.setId(id);
             return this;
         }
 
-        public Builder setName(String name) {
+        public Builder<ID> setName(String name) {
             shop.setName(name);
             return this;
         }
 
-        public Builder setLocation(String location) {
+        public Builder<ID> setLocation(String location) {
             shop.setLocation(location);
             return this;
         }
 
-        public Shop build() {
+        public Shop<ID> build() {
             return shop;
         }
     }

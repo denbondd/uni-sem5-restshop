@@ -11,7 +11,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ShopMySqlDao implements ShopDao {
+public class ShopMySqlDao implements ShopDao<Long> {
 
     private static final String SELECT_ALL = "SELECT * FROM shop";
     private static final String SELECT_BY_ID = "SELECT * FROM shop WHERE id = ?";
@@ -25,15 +25,15 @@ public class ShopMySqlDao implements ShopDao {
         this.dataSource = dataSource;
     }
 
-    public static Shop mapRsToShop(ResultSet rs) throws SQLException {
-        return new Shop.Builder()
+    public static Shop<Long> mapRsToShop(ResultSet rs) throws SQLException {
+        return new Shop.Builder<Long>()
                 .setId(rs.getLong("id"))
                 .setName(rs.getString("name"))
                 .setLocation(rs.getString("location"))
                 .build();
     }
 
-    private static PreparedStatement mapShopToRs(Shop shop, PreparedStatement ps) throws SQLException {
+    private static PreparedStatement mapShopToRs(Shop<Long> shop, PreparedStatement ps) throws SQLException {
         ps.setLong(1, shop.getId());
         ps.setString(2, shop.getName());
         ps.setString(3, shop.getLocation());
@@ -41,8 +41,8 @@ public class ShopMySqlDao implements ShopDao {
     }
 
     @Override
-    public List<Shop> getAll() {
-        List<Shop> shops = new ArrayList<>();
+    public List<Shop<Long>> getAll() {
+        List<Shop<Long>> shops = new ArrayList<>();
         try (Connection con = dataSource.getConnection();
              PreparedStatement ps = con.prepareStatement(SELECT_ALL);
              ResultSet rs = ps.executeQuery()) {
@@ -56,8 +56,8 @@ public class ShopMySqlDao implements ShopDao {
     }
 
     @Override
-    public List<Shop> getAllByName(String name) {
-        List<Shop> shops = new ArrayList<>();
+    public List<Shop<Long>> getAllByName(String name) {
+        List<Shop<Long>> shops = new ArrayList<>();
         try (Connection con = dataSource.getConnection();
              PreparedStatement ps = con.prepareStatement(SELECT_ALL);
              ResultSet rs = ps.executeQuery()) {
@@ -71,7 +71,7 @@ public class ShopMySqlDao implements ShopDao {
     }
 
     @Override
-    public Shop getById(Long id) {
+    public Shop<Long> getById(Long id) {
         try (Connection con = dataSource.getConnection();
              PreparedStatement ps = con.prepareStatement(SELECT_BY_ID)) {
             ps.setLong(1, id);
@@ -99,7 +99,7 @@ public class ShopMySqlDao implements ShopDao {
     }
 
     @Override
-    public boolean update(Shop shop) {
+    public boolean update(Shop<Long> shop) {
         try (Connection con = dataSource.getConnection();
              PreparedStatement ps = con.prepareStatement(UPDATE)) {
             mapShopToRs(shop, ps);

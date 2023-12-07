@@ -4,14 +4,14 @@ import ua.nure.st.patterns.labs.entity.Product;
 
 import java.util.List;
 
-public interface ProductDao {
-    List<Product> getAll();
-    List<Product> getAllByName(String name);
-    List<Product> getAllByBrandId(Long brandId);
-    List<Product> getAllByCategoryId(Long categoryId);
-    Product getById(Long id);
+public interface ProductDao<ID> {
+    List<Product<ID>> getAll();
+    List<Product<ID>> getAllByName(String name);
+    List<Product<ID>> getAllByBrandId(Long brandId);
+    List<Product<ID>> getAllByCategoryId(Long categoryId);
+    Product<ID> getById(ID id);
     boolean save(String name, String description, Long price, Long brandId, Long categoryId);
-    boolean update(Product product);
-    boolean undo(Long id);
-    boolean delete(Long id);
+    boolean update(Product<ID> product);
+    boolean undo(ID id);
+    boolean delete(ID id);
 }

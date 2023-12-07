@@ -1,22 +1,22 @@
 package ua.nure.st.patterns.labs.entity;
 
-public class Brand {
+public class Brand<ID> {
 
-    private Long id;
+    private ID id;
     private String name;
 
     private Brand() {}
 
-    public Brand(Long id, String name) {
+    public Brand(ID id, String name) {
         this.id = id;
         this.name = name;
     }
 
-    public Long getId() {
+    public ID getId() {
         return id;
     }
 
-    private void setId(Long id) {
+    private void setId(ID id) {
         this.id = id;
     }
 
@@ -28,21 +28,21 @@ public class Brand {
         this.name = name;
     }
 
-    public static class Builder {
+    public static class Builder<ID> {
 
-        private final Brand brand = new Brand();
+        private final Brand<ID> brand = new Brand<>();
 
-        public Builder setId(Long id) {
+        public Builder<ID> setId(ID id) {
             brand.setId(id);
             return this;
         }
 
-        public Builder setName(String name) {
+        public Builder<ID> setName(String name) {
             brand.setName(name);
             return this;
         }
 
-        public Brand build() {
+        public Brand<ID> build() {
             return brand;
         }
     }

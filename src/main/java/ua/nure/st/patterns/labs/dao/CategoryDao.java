@@ -4,10 +4,10 @@ import ua.nure.st.patterns.labs.entity.Category;
 
 import java.util.List;
 
-public interface CategoryDao {
-    List<Category> getAll();
-    Category getById(Long id);
+public interface CategoryDao<ID> {
+    List<Category<ID>> getAll();
+    Category<ID> getById(ID id);
     boolean save(String name);
-    boolean update(Category category);
-    boolean delete(Long id);
+    boolean update(Category<ID> category);
+    boolean delete(ID id);
 }

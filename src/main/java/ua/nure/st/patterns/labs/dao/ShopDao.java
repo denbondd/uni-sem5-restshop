@@ -4,11 +4,11 @@ import ua.nure.st.patterns.labs.entity.Shop;
 
 import java.util.List;
 
-public interface ShopDao {
-    List<Shop> getAll();
-    List<Shop> getAllByName(String name);
-    Shop getById(Long id);
+public interface ShopDao<ID> {
+    List<Shop<ID>> getAll();
+    List<Shop<ID>> getAllByName(String name);
+    Shop<ID> getById(ID id);
     boolean save(String name, String location);
-    boolean update(Shop shop);
-    boolean delete(Long id);
+    boolean update(Shop<ID> shop);
+    boolean delete(ID id);
 }

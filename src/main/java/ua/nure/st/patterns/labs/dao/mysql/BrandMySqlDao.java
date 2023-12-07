@@ -11,7 +11,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BrandMySqlDao implements BrandDao {
+public class BrandMySqlDao implements BrandDao<Long> {
     private static final String SELECT_ALL = "SELECT * FROM brand";
     private static final String SELECT_BY_ID = "SELECT * FROM brand WHERE id = ?";
     private static final String INSERT = "INSERT INTO brand (name) VALUES (?)";
@@ -24,22 +24,22 @@ public class BrandMySqlDao implements BrandDao {
         this.dataSource = dataSource;
     }
 
-    private static Brand mapRsToBrand(ResultSet rs) throws SQLException {
-        return new Brand.Builder()
+    private static Brand<Long> mapRsToBrand(ResultSet rs) throws SQLException {
+        return new Brand.Builder<Long>()
                 .setId(rs.getLong("id"))
                 .setName(rs.getString("name"))
                 .build();
     }
 
-    private static PreparedStatement mapBrandToRs(Brand brand, PreparedStatement ps) throws SQLException {
+    private static PreparedStatement mapBrandToRs(Brand<Long> brand, PreparedStatement ps) throws SQLException {
         ps.setLong(1, brand.getId());
         ps.setString(2, brand.getName());
         return ps;
     }
 
     @Override
-    public List<Brand> getAll() {
-        List<Brand> brands = new ArrayList<>();
+    public List<Brand<Long>> getAll() {
+        List<Brand<Long>> brands = new ArrayList<>();
         try (Connection con = dataSource.getConnection();
              PreparedStatement ps = con.prepareStatement(SELECT_ALL);
              ResultSet rs = ps.executeQuery()) {
@@ -53,7 +53,7 @@ public class BrandMySqlDao implements BrandDao {
     }
 
     @Override
-    public Brand getById(Long id) {
+    public Brand<Long> getById(Long id) {
         try (Connection con = dataSource.getConnection();
              PreparedStatement ps = con.prepareStatement(SELECT_BY_ID)) {
             ps.setLong(1, id);
@@ -80,7 +80,7 @@ public class BrandMySqlDao implements BrandDao {
     }
 
     @Override
-    public boolean update(Brand brand) {
+    public boolean update(Brand<Long> brand) {
         try (Connection con = dataSource.getConnection();
              PreparedStatement ps = con.prepareStatement(UPDATE)) {
             mapBrandToRs(brand, ps);

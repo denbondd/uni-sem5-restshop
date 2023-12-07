@@ -12,7 +12,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProductMySqlDao implements ProductDao {
+public class ProductMySqlDao implements ProductDao<Long> {
 
     private static final String SELECT_ALL = "SELECT * FROM product";
     private static final String SELECT_BY_ID = "SELECT * FROM product WHERE id = ?";
@@ -31,8 +31,8 @@ public class ProductMySqlDao implements ProductDao {
         this.productsHistory = new ProductsHistory(p -> updateAndLogToHistory(p, false));
     }
 
-    public static Product mapRsToProduct(ResultSet rs) throws SQLException {
-        return new Product.Builder()
+    public static Product<Long> mapRsToProduct(ResultSet rs) throws SQLException {
+        return new Product.Builder<Long>()
                 .setId(rs.getLong("id"))
                 .setName(rs.getString("name"))
                 .setPrice(rs.getLong("price"))
@@ -42,8 +42,8 @@ public class ProductMySqlDao implements ProductDao {
     }
 
     @Override
-    public List<Product> getAll() {
-        List<Product> products = new ArrayList<>();
+    public List<Product<Long>> getAll() {
+        List<Product<Long>> products = new ArrayList<>();
         try (Connection con = dataSource.getConnection();
              PreparedStatement ps = con.prepareStatement(SELECT_ALL);
              ResultSet rs = ps.executeQuery()) {
@@ -57,8 +57,8 @@ public class ProductMySqlDao implements ProductDao {
     }
 
     @Override
-    public List<Product> getAllByName(String name) {
-        List<Product> products = new ArrayList<>();
+    public List<Product<Long>> getAllByName(String name) {
+        List<Product<Long>> products = new ArrayList<>();
         try (Connection con = dataSource.getConnection();
              PreparedStatement ps = con.prepareStatement(SELECT_PRODUCTS_BY_NAME)) {
             ps.setString(1, name);
@@ -74,8 +74,8 @@ public class ProductMySqlDao implements ProductDao {
     }
 
     @Override
-    public List<Product> getAllByBrandId(Long brandId) {
-        List<Product> products = new ArrayList<>();
+    public List<Product<Long>> getAllByBrandId(Long brandId) {
+        List<Product<Long>> products = new ArrayList<>();
         try (Connection con = dataSource.getConnection();
              PreparedStatement ps = con.prepareStatement(SELECT_PRODUCTS_BY_BRAND)) {
             ps.setLong(1, brandId);
@@ -91,8 +91,8 @@ public class ProductMySqlDao implements ProductDao {
     }
 
     @Override
-    public List<Product> getAllByCategoryId(Long categoryId) {
-        List<Product> products = new ArrayList<>();
+    public List<Product<Long>> getAllByCategoryId(Long categoryId) {
+        List<Product<Long>> products = new ArrayList<>();
         try (Connection con = dataSource.getConnection();
              PreparedStatement ps = con.prepareStatement(SELECT_PRODUCTS_BY_CATEGORY)) {
             ps.setLong(1, categoryId);
@@ -108,7 +108,7 @@ public class ProductMySqlDao implements ProductDao {
     }
 
     @Override
-    public Product getById(Long id) {
+    public Product<Long> getById(Long id) {
         try (Connection con = dataSource.getConnection();
              PreparedStatement ps = con.prepareStatement(SELECT_BY_ID)) {
             ps.setLong(1, id);
@@ -138,7 +138,7 @@ public class ProductMySqlDao implements ProductDao {
         }
     }
 
-    public boolean updateAndLogToHistory(Product product, boolean saveToHistory) {
+    public boolean updateAndLogToHistory(Product<Long> product, boolean saveToHistory) {
         try (Connection con = dataSource.getConnection();
              PreparedStatement ps = con.prepareStatement(UPDATE)) {
             ps.setString(1, product.getName());
@@ -157,7 +157,7 @@ public class ProductMySqlDao implements ProductDao {
     }
 
     @Override
-    public boolean update(Product product) {
+    public boolean update(Product<Long> product) {
         return updateAndLogToHistory(product, true);
     }
 
