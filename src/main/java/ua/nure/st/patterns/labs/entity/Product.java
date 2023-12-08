@@ -7,14 +7,16 @@ public class Product<ID> {
 
     @JsonSerialize(using = ToStringSerializer.class)
     private ID id;
-    private Long brandId;
-    private Long categoryId;
+    @JsonSerialize(using = ToStringSerializer.class)
+    private ID brandId;
+    @JsonSerialize(using = ToStringSerializer.class)
+    private ID categoryId;
     private String name;
     private Long price;
 
     private Product() {}
 
-    public Product(ID id, Long brandId, Long categoryId, String name, Long price) {
+    public Product(ID id, ID brandId, ID categoryId, String name, Long price) {
         this.id = id;
         this.brandId = brandId;
         this.categoryId = categoryId;
@@ -30,19 +32,19 @@ public class Product<ID> {
         this.id = id;
     }
 
-    public Long getBrandId() {
+    public ID getBrandId() {
         return brandId;
     }
 
-    public void setBrandId(Long brandId) {
+    public void setBrandId(ID brandId) {
         this.brandId = brandId;
     }
 
-    public Long getCategoryId() {
+    public ID getCategoryId() {
         return categoryId;
     }
 
-    public void setCategoryId(Long categoryId) {
+    public void setCategoryId(ID categoryId) {
         this.categoryId = categoryId;
     }
 
@@ -70,12 +72,12 @@ public class Product<ID> {
             return this;
         }
 
-        public Builder<ID> setBrandId(Long brandId) {
+        public Builder<ID> setBrandId(ID brandId) {
             product.setBrandId(brandId);
             return this;
         }
 
-        public Builder<ID> setCategoryId(Long categoryId) {
+        public Builder<ID> setCategoryId(ID categoryId) {
             product.setCategoryId(categoryId);
             return this;
         }

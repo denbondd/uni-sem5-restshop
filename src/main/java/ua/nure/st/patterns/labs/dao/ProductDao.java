@@ -7,11 +7,11 @@ import java.util.List;
 public interface ProductDao<ID> {
     List<Product<ID>> getAll();
     List<Product<ID>> getAllByName(String name);
-    List<Product<ID>> getAllByBrandId(ID brandId);
-    List<Product<ID>> getAllByCategoryId(ID categoryId);
-    Product<ID> getById(ID id);
-    boolean save(String name, String description, Long price, ID brandId, ID categoryId);
+    List<Product<ID>> getAllByBrandId(String brandId);
+    List<Product<ID>> getAllByCategoryId(String categoryId);
+    Product<ID> getById(String id);
+    boolean save(String name, String description, Long price, String brandId, String categoryId);
     boolean update(Product<ID> product);
-    boolean undo(ID id);
-    boolean delete(ID id);
+    boolean undo(String id);
+    boolean delete(String id);
 }

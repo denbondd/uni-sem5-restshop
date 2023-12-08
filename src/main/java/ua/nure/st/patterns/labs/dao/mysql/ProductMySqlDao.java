@@ -74,11 +74,12 @@ public class ProductMySqlDao implements ProductDao<Long> {
     }
 
     @Override
-    public List<Product<Long>> getAllByBrandId(Long brandId) {
+    public List<Product<Long>> getAllByBrandId(String brandId) {
+        long longBrandId = Long.parseLong(brandId);
         List<Product<Long>> products = new ArrayList<>();
         try (Connection con = dataSource.getConnection();
              PreparedStatement ps = con.prepareStatement(SELECT_PRODUCTS_BY_BRAND)) {
-            ps.setLong(1, brandId);
+            ps.setLong(1, longBrandId);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     products.add(mapRsToProduct(rs));
@@ -91,11 +92,12 @@ public class ProductMySqlDao implements ProductDao<Long> {
     }
 
     @Override
-    public List<Product<Long>> getAllByCategoryId(Long categoryId) {
+    public List<Product<Long>> getAllByCategoryId(String categoryId) {
+        long longCategoryId = Long.parseLong(categoryId);
         List<Product<Long>> products = new ArrayList<>();
         try (Connection con = dataSource.getConnection();
              PreparedStatement ps = con.prepareStatement(SELECT_PRODUCTS_BY_CATEGORY)) {
-            ps.setLong(1, categoryId);
+            ps.setLong(1, longCategoryId);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     products.add(mapRsToProduct(rs));
@@ -108,10 +110,11 @@ public class ProductMySqlDao implements ProductDao<Long> {
     }
 
     @Override
-    public Product<Long> getById(Long id) {
+    public Product<Long> getById(String id) {
+        long longId = Long.parseLong(id);
         try (Connection con = dataSource.getConnection();
              PreparedStatement ps = con.prepareStatement(SELECT_BY_ID)) {
-            ps.setLong(1, id);
+            ps.setLong(1, longId);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     return mapRsToProduct(rs);
@@ -124,13 +127,15 @@ public class ProductMySqlDao implements ProductDao<Long> {
     }
 
     @Override
-    public boolean save(String name, String description, Long price, Long brandId, Long categoryId) {
+    public boolean save(String name, String description, Long price, String brandId, String categoryId) {
+        long longBrandId = Long.parseLong(brandId);
+        long longCategoryId = Long.parseLong(categoryId);
         try (Connection con = dataSource.getConnection();
              PreparedStatement ps = con.prepareStatement(INSERT)) {
             ps.setString(1, name);
             ps.setLong(2, price);
-            ps.setLong(3, brandId);
-            ps.setLong(4, categoryId);
+            ps.setLong(3, longBrandId);
+            ps.setLong(4, longCategoryId);
             int result = ps.executeUpdate();
             return result > 0;
         } catch (SQLException e) {
@@ -162,15 +167,17 @@ public class ProductMySqlDao implements ProductDao<Long> {
     }
 
     @Override
-    public boolean undo(Long id) {
-        return productsHistory.undo(id);
+    public boolean undo(String id) {
+        long longId = Long.parseLong(id);
+        return productsHistory.undo(longId);
     }
 
     @Override
-    public boolean delete(Long id) {
+    public boolean delete(String id) {
+        long longId = Long.parseLong(id);
         try (Connection con = dataSource.getConnection();
              PreparedStatement ps = con.prepareStatement(DELETE)) {
-            ps.setLong(1, id);
+            ps.setLong(1, longId);
             int result = ps.executeUpdate();
             return result > 0;
         } catch (SQLException e) {

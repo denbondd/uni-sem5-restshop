@@ -27,12 +27,12 @@ public class ShopHasProductController {
     }
 
     @GetMapping("/shopsWithProduct/{productId}")
-    public List<ShopHasProductDao.ShopHasProduct> getShopsByProductId(@PathVariable Long productId) {
+    public List<ShopHasProductDao.ShopHasProduct> getShopsByProductId(@PathVariable String productId) {
         return shopHasProductDao.getShopsWithProduct(productId);
     }
 
     @GetMapping("/productsInShop/{shopId}")
-    public List<ShopHasProductDao.ProductHasShop> getProductsInShop(@PathVariable Long shopId) {
+    public List<ShopHasProductDao.ProductHasShop> getProductsInShop(@PathVariable String shopId) {
         return shopHasProductDao.getProductsInShop(shopId);
     }
 
@@ -47,7 +47,7 @@ public class ShopHasProductController {
     }
 
     @DeleteMapping("/{shopId}/{productId}")
-    public boolean deleteProductFromShop(@PathVariable Long shopId, @PathVariable Long productId) {
+    public boolean deleteProductFromShop(@PathVariable String shopId, @PathVariable String productId) {
         return shopHasProductDao.delete(shopId, productId);
     }
 

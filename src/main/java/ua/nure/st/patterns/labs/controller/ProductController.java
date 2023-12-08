@@ -32,7 +32,7 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
-    public Product getProduct(@PathVariable Long id) {
+    public Product getProduct(@PathVariable String id) {
         return productDao.getById(id);
     }
 
@@ -42,17 +42,17 @@ public class ProductController {
     }
 
     @GetMapping("/brand/{brandId}")
-    public List<Product> getProductsByBrandId(@PathVariable Long brandId) {
+    public List<Product> getProductsByBrandId(@PathVariable String brandId) {
         return productDao.getAllByBrandId(brandId);
     }
 
     @GetMapping("/category/{categoryId}")
-    public List<Product> getProductsByCategoryId(@PathVariable Long categoryId) {
+    public List<Product> getProductsByCategoryId(@PathVariable String categoryId) {
         return productDao.getAllByCategoryId(categoryId);
     }
 
     @PostMapping
-    public boolean addProduct(@RequestBody CreateProductDto dto) {
+    public boolean addProduct(@RequestBody CreateProductDto<String> dto) {
         return productDao.save(dto.name(), dto.description(), dto.price(), dto.brandId(), dto.categoryId());
     }
 
@@ -63,7 +63,7 @@ public class ProductController {
     }
 
     @PutMapping("/{id}/undo")
-    public ResponseEntity<String> undo(@PathVariable Long id) {
+    public ResponseEntity<String> undo(@PathVariable String id) {
         boolean res = productDao.undo(id);
         if (res) {
             return new ResponseEntity<>("Product was restored", HttpStatus.OK);
@@ -76,7 +76,7 @@ public class ProductController {
     }
 
     @DeleteMapping("/{id}")
-    public void deleteProduct(@PathVariable Long id) {
+    public void deleteProduct(@PathVariable String id) {
         productDao.delete(id);
     }
 }

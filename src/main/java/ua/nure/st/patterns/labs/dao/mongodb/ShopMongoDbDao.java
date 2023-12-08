@@ -31,12 +31,12 @@ public class ShopMongoDbDao implements ShopDao<ObjectId> {
             List<Document> documents = collection.find().into(new ArrayList<>());
 
             return documents.stream()
-                    .map(this::mapDocumentToShop)
+                    .map(ShopMongoDbDao::mapDocumentToShop)
                     .collect(Collectors.toList());
         }
     }
 
-    private Shop<ObjectId> mapDocumentToShop(Document document) {
+    public static Shop<ObjectId> mapDocumentToShop(Document document) {
         return new Shop<>(
                 document.getObjectId("_id"),
                 document.getString("name"),
@@ -53,7 +53,7 @@ public class ShopMongoDbDao implements ShopDao<ObjectId> {
             List<Document> documents = collection.find(new Document("name", name)).into(new ArrayList<>());
 
             return documents.stream()
-                    .map(this::mapDocumentToShop)
+                    .map(ShopMongoDbDao::mapDocumentToShop)
                     .collect(Collectors.toList());
         }
     }

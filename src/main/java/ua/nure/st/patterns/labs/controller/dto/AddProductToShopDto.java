@@ -1,4 +1,4 @@
 package ua.nure.st.patterns.labs.controller.dto;
 
-public record AddProductToShopDto(Long shopId, Long productId, Integer count) {
+public record AddProductToShopDto(String shopId, String productId, Integer count) {
 }

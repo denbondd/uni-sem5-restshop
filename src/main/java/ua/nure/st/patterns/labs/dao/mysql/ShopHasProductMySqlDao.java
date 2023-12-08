@@ -30,11 +30,12 @@ public class ShopHasProductMySqlDao implements ShopHasProductDao<Long> {
     }
 
     @Override
-    public List<ProductHasShop<Long>> getProductsInShop(Long shopId) {
+    public List<ProductHasShop<Long>> getProductsInShop(String shopId) {
+        long shopIdLong = Long.parseLong(shopId);
         List<ProductHasShop<Long>> products = new ArrayList<>();
         try (Connection con = dataSource.getConnection(); PreparedStatement ps = con.prepareStatement(
                 SELECT_PRODUCTS_IN_SHOP)) {
-            ps.setLong(1, shopId);
+            ps.setLong(1, shopIdLong);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     products.add(new ProductHasShop<>(mapRsToProduct(rs), rs.getInt("count")));
@@ -47,11 +48,12 @@ public class ShopHasProductMySqlDao implements ShopHasProductDao<Long> {
     }
 
     @Override
-    public List<ShopHasProduct<Long>> getShopsWithProduct(Long id) {
+    public List<ShopHasProduct<Long>> getShopsWithProduct(String id) {
+        long idLong = Long.parseLong(id);
         List<ShopHasProduct<Long>> shops = new ArrayList<>();
         try (Connection con = dataSource.getConnection(); PreparedStatement ps = con.prepareStatement(
                 SELECT_SHOPS_WITH_PRODUCT)) {
-            ps.setLong(1, id);
+            ps.setLong(1, idLong);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     shops.add(new ShopHasProduct<>(mapRsToShop(rs), rs.getInt("count")));
@@ -64,19 +66,21 @@ public class ShopHasProductMySqlDao implements ShopHasProductDao<Long> {
     }
 
     @Override
-    public boolean save(Long shopId, Long productId, Integer count) {
+    public boolean save(String shopId, String productId, Integer count) {
+        long shopIdLong = Long.parseLong(shopId);
+        long productIdLong = Long.parseLong(productId);
         try (Connection con = dataSource.getConnection(); PreparedStatement ps = con.prepareStatement(INSERT)) {
             con.setAutoCommit(false);
             con.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
 
-            ps.setLong(1, shopId);
-            ps.setLong(2, productId);
+            ps.setLong(1, shopIdLong);
+            ps.setLong(2, productIdLong);
             ps.setInt(3, count);
             boolean success = ps.executeUpdate() > 0;
             if (success) {
                 shopEventManager.notify(
-                        shopId,
-                        String.format("Product %d was added with initial count %d", productId, count)
+                        shopIdLong,
+                        String.format("Product %d was added with initial count %d", productIdLong, count)
                 );
             }
 
@@ -88,18 +92,20 @@ public class ShopHasProductMySqlDao implements ShopHasProductDao<Long> {
     }
 
     @Override
-    public boolean update(Long shopId, Long productId, Integer count) {
+    public boolean update(String shopId, String productId, Integer count) {
+        long shopIdLong = Long.parseLong(shopId);
+        long productIdLong = Long.parseLong(productId);
         try (Connection con = dataSource.getConnection(); PreparedStatement ps = con.prepareStatement(UPDATE)) {
             con.setAutoCommit(false);
             con.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
 
             ps.setInt(1, count);
-            ps.setLong(2, shopId);
-            ps.setLong(3, productId);
+            ps.setLong(2, shopIdLong);
+            ps.setLong(3, productIdLong);
             boolean success = ps.executeUpdate() > 0;
 
             if (success) {
-                shopEventManager.notify(shopId, String.format("Product %d count changed to %d", productId, count));
+                shopEventManager.notify(shopIdLong, String.format("Product %d count changed to %d", productIdLong, count));
             }
 
             con.commit();
@@ -110,12 +116,14 @@ public class ShopHasProductMySqlDao implements ShopHasProductDao<Long> {
     }
 
     @Override
-    public boolean delete(Long shopId, Long productId) {
+    public boolean delete(String shopId, String productId) {
+        long shopIdLong = Long.parseLong(shopId);
+        long productIdLong = Long.parseLong(productId);
         try (Connection con = dataSource.getConnection(); PreparedStatement ps = con.prepareStatement(DELETE)) {
-            ps.setLong(1, shopId);
-            ps.setLong(2, productId);
+            ps.setLong(1, shopIdLong);
+            ps.setLong(2, productIdLong);
             if (ps.executeUpdate() > 0) {
-                shopEventManager.notify(shopId, String.format("Product %d was deleted", productId));
+                shopEventManager.notify(shopIdLong, String.format("Product %d was deleted", productIdLong));
                 return true;
             } else {
                 return false;

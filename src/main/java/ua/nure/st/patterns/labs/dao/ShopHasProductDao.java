@@ -6,11 +6,11 @@ import ua.nure.st.patterns.labs.entity.Shop;
 import java.util.List;
 
 public interface ShopHasProductDao<ID> {
-    List<ProductHasShop<ID>> getProductsInShop(ID shopId);
-    List<ShopHasProduct<ID>> getShopsWithProduct(ID productId);
-    boolean save(ID shopId, ID productId, Integer count);
-    boolean update(ID shopId, ID productId, Integer count);
-    boolean delete(ID shopId, ID productId);
+    List<ProductHasShop<ID>> getProductsInShop(String shopId);
+    List<ShopHasProduct<ID>> getShopsWithProduct(String productId);
+    boolean save(String shopId, String productId, Integer count);
+    boolean update(String shopId, String productId, Integer count);
+    boolean delete(String shopId, String productId);
 
     record ShopHasProduct<ID>(Shop<ID> shop, Integer count) {
     }
