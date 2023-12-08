@@ -17,11 +17,11 @@ public class MySqlDao implements Dao {
     private final DataSource dataSource;
     private final ShopEventManager shopEventManager;
 
-    private ProductDao productDao;
-    private ShopDao shopDao;
-    private BrandDao brandDao;
-    private CategoryDao categoryDao;
-    private ShopHasProductDao shopHasProductDao;
+    private ProductDao<Long> productDao;
+    private ShopDao<Long> shopDao;
+    private BrandDao<Long> brandDao;
+    private CategoryDao<Long> categoryDao;
+    private ShopHasProductDao<Long> shopHasProductDao;
 
     public MySqlDao(DataSource dataSource, ShopEventManager shopEventManager) {
         this.dataSource = dataSource;
@@ -29,7 +29,7 @@ public class MySqlDao implements Dao {
     }
 
     @Override
-    public ShopDao getShopDao() {
+    public ShopDao<Long> getShopDao() {
         if (shopDao == null) {
             shopDao = new ShopMySqlDao(dataSource);
         }
@@ -37,7 +37,7 @@ public class MySqlDao implements Dao {
     }
 
     @Override
-    public ProductDao getProductDao() {
+    public ProductDao<Long> getProductDao() {
         if (productDao == null) {
             productDao = new ProductMySqlDao(dataSource);
         }
@@ -45,7 +45,7 @@ public class MySqlDao implements Dao {
     }
 
     @Override
-    public BrandDao getBrandDao() {
+    public BrandDao<Long> getBrandDao() {
         if (brandDao == null) {
             brandDao = new BrandMySqlDao(dataSource);
         }
@@ -53,7 +53,7 @@ public class MySqlDao implements Dao {
     }
 
     @Override
-    public CategoryDao getCategoryDao() {
+    public CategoryDao<Long> getCategoryDao() {
         if (categoryDao == null) {
             categoryDao = new CategoryMySqlDao(dataSource);
         }
@@ -61,7 +61,7 @@ public class MySqlDao implements Dao {
     }
 
     @Override
-    public ShopHasProductDao getShopHasProductDao() {
+    public ShopHasProductDao<Long> getShopHasProductDao() {
         if (shopHasProductDao == null) {
             shopHasProductDao = new ShopHasProductMySqlDao(dataSource, shopEventManager);
         }
