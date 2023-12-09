@@ -13,6 +13,8 @@ import javax.sql.DataSource;
 public class DaoFactory {
 
     private final Dao dao;
+    private final MySqlDao mySqlDao;
+    private final MongoDbDao mongoDbDao;
 
     public DaoFactory(
             @Value("${db.type}") String type,
@@ -22,13 +24,25 @@ public class DaoFactory {
             @Value("${db.mongo.name}") String mongoDbName
     ) {
         DaoType daoType = DaoType.valueOf(type);
+        mySqlDao = new MySqlDao(dataSource, shopEventManager);
+        mongoDbDao = new MongoDbDao(mongoDbUrl, mongoDbName);
         if (daoType == DaoType.MY_SQL) {
-            dao = new MySqlDao(dataSource, shopEventManager);
+            dao = mySqlDao;
         } else if (daoType == DaoType.MONGO_DB) {
-            dao = new MongoDbDao(mongoDbUrl, mongoDbName);
+            dao = mongoDbDao;
         } else {
             throw new IllegalArgumentException("Unknown database type");
         }
+    }
+
+    @Bean
+    public MySqlDao getMySqlDao() {
+        return mySqlDao;
+    }
+
+    @Bean
+    public MongoDbDao getMongoDbDao() {
+        return mongoDbDao;
     }
 
     @Bean

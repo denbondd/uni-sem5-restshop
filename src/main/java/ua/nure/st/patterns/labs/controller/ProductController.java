@@ -53,7 +53,7 @@ public class ProductController {
 
     @PostMapping
     public boolean addProduct(@RequestBody CreateProductDto<String> dto) {
-        return productDao.save(dto.name(), dto.description(), dto.price(), dto.brandId(), dto.categoryId());
+        return productDao.save(dto.name(), dto.price(), dto.brandId(), dto.categoryId());
     }
 
     @PutMapping("/{id}")

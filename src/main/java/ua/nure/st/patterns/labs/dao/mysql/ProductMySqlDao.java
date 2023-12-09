@@ -127,7 +127,7 @@ public class ProductMySqlDao implements ProductDao<Long> {
     }
 
     @Override
-    public boolean save(String name, String description, Long price, String brandId, String categoryId) {
+    public boolean save(String name, Long price, String brandId, String categoryId) {
         long longBrandId = Long.parseLong(brandId);
         long longCategoryId = Long.parseLong(categoryId);
         try (Connection con = dataSource.getConnection();

@@ -10,7 +10,7 @@ public interface ProductDao<ID> {
     List<Product<ID>> getAllByBrandId(String brandId);
     List<Product<ID>> getAllByCategoryId(String categoryId);
     Product<ID> getById(String id);
-    boolean save(String name, String description, Long price, String brandId, String categoryId);
+    boolean save(String name, Long price, String brandId, String categoryId);
     boolean update(Product<ID> product);
     boolean undo(String id);
     boolean delete(String id);

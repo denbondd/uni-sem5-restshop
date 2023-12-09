@@ -106,7 +106,7 @@ public class ProductMongoDbDao implements ProductDao<ObjectId> {
     }
 
     @Override
-    public boolean save(String name, String description, Long price, String brandId, String categoryId) {
+    public boolean save(String name, Long price, String brandId, String categoryId) {
         ObjectId brandObjectId = new ObjectId(brandId);
         ObjectId categoryObjectId = new ObjectId(categoryId);
         try (MongoClient client = MongoDbDao.getMongoClient()) {
@@ -115,7 +115,6 @@ public class ProductMongoDbDao implements ProductDao<ObjectId> {
 
             Document document = new Document()
                     .append("name", name)
-                    .append("description", description)
                     .append("price", price)
                     .append("brandId", brandObjectId)
                     .append("categoryId", categoryObjectId);
