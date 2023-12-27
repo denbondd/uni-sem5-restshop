@@ -6,4 +6,5 @@ public interface Dao {
     BrandDao getBrandDao();
     CategoryDao getCategoryDao();
     ShopHasProductDao getShopHasProductDao();
+    UserDao getUserDao();
 }

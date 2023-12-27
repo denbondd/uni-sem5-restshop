@@ -7,6 +7,7 @@ import ua.nure.st.patterns.labs.dao.Dao;
 import ua.nure.st.patterns.labs.dao.ProductDao;
 import ua.nure.st.patterns.labs.dao.ShopDao;
 import ua.nure.st.patterns.labs.dao.ShopHasProductDao;
+import ua.nure.st.patterns.labs.dao.UserDao;
 import ua.nure.st.patterns.labs.observer.ShopEventManager;
 
 import javax.sql.DataSource;
@@ -66,6 +67,11 @@ public class MySqlDao implements Dao {
             shopHasProductDao = new ShopHasProductMySqlDao(dataSource, shopEventManager);
         }
         return shopHasProductDao;
+    }
+
+    @Override
+    public UserDao getUserDao() {
+        return new UserMySqlDao(dataSource);
     }
 
 }

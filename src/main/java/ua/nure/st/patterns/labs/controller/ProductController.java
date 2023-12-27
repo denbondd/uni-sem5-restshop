@@ -8,8 +8,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import ua.nure.st.patterns.labs.controller.dto.AuthDto;
 import ua.nure.st.patterns.labs.controller.dto.CreateProductDto;
 import ua.nure.st.patterns.labs.dao.ProductDao;
 import ua.nure.st.patterns.labs.entity.Product;
@@ -52,19 +54,38 @@ public class ProductController {
     }
 
     @PostMapping
-    public boolean addProduct(@RequestBody CreateProductDto dto) {
-        return productDao.save(dto.name(), dto.description(), dto.price(), dto.brandId(), dto.categoryId());
+    public boolean addProduct(
+            @RequestBody CreateProductDto dto,
+            @RequestHeader("login") String login,
+            @RequestHeader("password") String password
+    ) {
+        return productDao.save(
+                dto.name(),
+                dto.description(),
+                dto.price(),
+                dto.brandId(),
+                dto.categoryId(),
+                new AuthDto(login, password)
+        );
     }
 
     @PutMapping("/{id}")
-    public Product updateProduct(@RequestBody Product product) {
-        productDao.update(product);
+    public Product updateProduct(
+            @RequestBody Product product,
+            @RequestHeader("login") String login,
+            @RequestHeader("password") String password
+    ) {
+        productDao.update(product, new AuthDto(login, password));
         return product;
     }
 
     @PutMapping("/{id}/undo")
-    public ResponseEntity<String> undo(@PathVariable Long id) {
-        boolean res = productDao.undo(id);
+    public ResponseEntity<String> undo(
+            @PathVariable Long id,
+            @RequestHeader("login") String login,
+            @RequestHeader("password") String password
+    ) {
+        boolean res = productDao.undo(id, new AuthDto(login, password));
         if (res) {
             return new ResponseEntity<>("Product was restored", HttpStatus.OK);
         } else {
@@ -76,7 +97,11 @@ public class ProductController {
     }
 
     @DeleteMapping("/{id}")
-    public void deleteProduct(@PathVariable Long id) {
-        productDao.delete(id);
+    public void deleteProduct(
+            @PathVariable Long id,
+            @RequestHeader("login") String login,
+            @RequestHeader("password") String password
+    ) {
+        productDao.delete(id, new AuthDto(login, password));
     }
 }

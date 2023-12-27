@@ -23,8 +23,8 @@ public class DaoFactory {
     }
 
     @Bean
-    public ProductDao getProductDao() {
-        return dao.getProductDao();
+    public ProductDao getProductDao(UserDao userDao) {
+        return new ProductDaoProxy(dao.getProductDao(), userDao);
     }
 
     @Bean
@@ -45,5 +45,10 @@ public class DaoFactory {
     @Bean
     public ShopHasProductDao getShopHasProductDao() {
         return dao.getShopHasProductDao();
+    }
+
+    @Bean
+    public UserDao getUserDao() {
+        return dao.getUserDao();
     }
 }

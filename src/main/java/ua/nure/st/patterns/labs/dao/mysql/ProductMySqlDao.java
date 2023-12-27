@@ -1,5 +1,6 @@
 package ua.nure.st.patterns.labs.dao.mysql;
 
+import ua.nure.st.patterns.labs.controller.dto.AuthDto;
 import ua.nure.st.patterns.labs.dao.ProductDao;
 import ua.nure.st.patterns.labs.entity.Product;
 import ua.nure.st.patterns.labs.momento.ProductsHistory;
@@ -124,7 +125,7 @@ public class ProductMySqlDao implements ProductDao {
     }
 
     @Override
-    public boolean save(String name, String description, Long price, Long brandId, Long categoryId) {
+    public boolean save(String name, String description, Long price, Long brandId, Long categoryId, AuthDto user) {
         try (Connection con = dataSource.getConnection();
              PreparedStatement ps = con.prepareStatement(INSERT)) {
             ps.setString(1, name);
@@ -157,17 +158,17 @@ public class ProductMySqlDao implements ProductDao {
     }
 
     @Override
-    public boolean update(Product product) {
+    public boolean update(Product product, AuthDto auth) {
         return updateAndLogToHistory(product, true);
     }
 
     @Override
-    public boolean undo(Long id) {
+    public boolean undo(Long id, AuthDto user) {
         return productsHistory.undo(id);
     }
 
     @Override
-    public boolean delete(Long id) {
+    public boolean delete(Long id, AuthDto user) {
         try (Connection con = dataSource.getConnection();
              PreparedStatement ps = con.prepareStatement(DELETE)) {
             ps.setLong(1, id);
